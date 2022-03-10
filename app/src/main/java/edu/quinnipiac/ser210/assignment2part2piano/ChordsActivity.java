@@ -12,10 +12,8 @@ public class ChordsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chords);
 
-        //supposed to get the notes of the chord and set the text view to those chords
-        String chord = (String) getIntent().getExtras().get("notes");
+        String notes = (String) getIntent().getExtras().get("notes");
         TextView textView = (TextView) findViewById(R.id.notes);
-        textView.setText(chord);
+        textView.setText(notes);
     }
-
 }

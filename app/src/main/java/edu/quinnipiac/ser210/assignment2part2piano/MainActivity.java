@@ -19,16 +19,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
-
-    public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
         ChordHandler chordHandler = new ChordHandler();
 
-        boolean userSelect = false;
-        private String url1 = "https://piano-chords.p.rapidapi.com/chords/major";
-        //private String url2= "/year?fragment=true&json=true";
+        private String url1 = "https://piano-chords.p.rapidapi.com/chords/";
         private String LOG_TAG = MainActivity.class.getSimpleName();
+        private String root;
 
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -45,14 +44,7 @@ import java.net.URL;
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (userSelect) {
-                        final String chord = (String) parent.getItemAtPosition(position);
-                        Log.i("onItemSelected :chord", chord);
-
-                        //TODO : call of async subclass goes here
-                        new FetchNote().execute(chord);
-                        userSelect = false;
-                    }
+                    root = (String) parent.getItemAtPosition(position);
                 }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
@@ -60,23 +52,22 @@ import java.net.URL;
                 }
             });
         }
-        @Override
-        public void onUserInteraction() {
-            super.onUserInteraction();
-            userSelect = true;
+
+        public void onSubmit(View view) {
+            if(root != null){
+                new FetchNote().execute(root);
+            }
         }
 
-        class FetchNote extends AsyncTask<String,Void,String>{
+    class FetchNote extends AsyncTask<String,Void,ArrayList<Chord>>{
             @Override
-            protected String doInBackground(String... strings) {
+            protected ArrayList<Chord> doInBackground(String... strings) {
 
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
-                String notes = null;
-                //I'm not sure if this works but what should happen is it gets our url and then the string (in our case the cord) of what the user
-                //selects it then is supposed to get the notes of the chord, i'm taking this in as a string I was unsure how to read it in as an array of notes
+                ArrayList<Chord> chords = null;
                 try{
-                    URL url = new URL(url1 + strings[0]);
+                    URL url = new URL(url1 + noteToURLConverter(strings[0]));
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setRequestProperty("x-rapidapi-key", "2fb87833cdmsh42170d144acb09dp1dccb7jsn1dedc3031a74");
@@ -87,7 +78,7 @@ import java.net.URL;
                         return null;
 
                     reader = new BufferedReader(new InputStreamReader(in));
-                    notes = getStringFromBuffer(reader);
+                    chords = getChordsFromBuffer(reader, strings[0]);
 
                 }catch(Exception e){
                     Log.e(LOG_TAG,"Error" + e.getMessage());
@@ -105,21 +96,22 @@ import java.net.URL;
                         }
                     }
                 }
-                return notes;
+                return chords;
             }
 
             @Override
-            protected void onPostExecute(String result) {
+            protected void onPostExecute(ArrayList<Chord> result) {
                 if (result != null)
-                    Log.d(LOG_TAG, result);
+                    Log.d(LOG_TAG, result.toString());
                 Intent intent = new Intent(MainActivity.this,ChordsActivity.class);
-                intent.putExtra("notes", result);
+                intent.putExtra("chords", result);
                 startActivity(intent);
 
             }
         }
 
-        private String getStringFromBuffer(BufferedReader bufferedReader) {
+        //Gets the chords from the BufferedReader
+        private ArrayList<Chord> getChordsFromBuffer(BufferedReader bufferedReader, String root) {
             StringBuffer buffer = new StringBuffer();
             String line;
 
@@ -129,7 +121,7 @@ import java.net.URL;
                         buffer.append(line + '\n');
                     }
                     bufferedReader.close();
-                    return chordHandler.getNotes(buffer.toString());
+                    return chordHandler.getChords(buffer.toString(), root);
                 } catch (Exception e) {
                     Log.e("MainActivity", "Error" + e.getMessage());
                     return null;
@@ -138,6 +130,16 @@ import java.net.URL;
                 }
             }
             return null;
+        }
+
+        //Takes the input from the spinner and converts it such that the inputted note works with the api
+        private String noteToURLConverter(String note){
+            if(note.contains("#")){
+                String res = note.charAt(0) + "sharp";
+                return res.toLowerCase();
+            }else{
+                return note.toLowerCase();
+            }
         }
     }
 

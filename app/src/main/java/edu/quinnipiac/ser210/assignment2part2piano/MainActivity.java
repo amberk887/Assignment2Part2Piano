@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     URL url = new URL(url1 + noteToURLConverter(strings[0]));
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
-                    urlConnection.setRequestProperty("x-rapidapi-key", "2fb87833cdmsh42170d144acb09dp1dccb7jsn1dedc3031a74");
+                    urlConnection.setRequestProperty("x-rapidapi-key", "61d3d3d5e3mshab3a9610c39fe9ap1d574djsn973568c7e356");
                     urlConnection.connect();
 
                     InputStream in = urlConnection.getInputStream();

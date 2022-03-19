@@ -7,4 +7,7 @@
     <string name="intervals_placeholder">Intervals</string>
     <string name="submit_button">Submit</string>
     <string name="title">Welcome to the Piano App! Please select a root note to find all the chords that originate from that root!</string>
+    <string name="action_shuffle">Shuffle</string>
+    <string name="action_search">Search</string>
+    <string name="action_random">Random Chord</string>
 </resources>

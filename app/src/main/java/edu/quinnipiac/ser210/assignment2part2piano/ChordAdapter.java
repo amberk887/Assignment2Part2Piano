@@ -38,6 +38,12 @@ public class ChordAdapter extends RecyclerView.Adapter<ChordAdapter.ViewHolder>{
         return mChordData.size();
     }
 
+    //Replaces data in recycle view with new data
+    public void filterList(ArrayList<Chord> filteredList){
+        mChordData = filteredList;
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mRootText;

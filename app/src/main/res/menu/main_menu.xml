@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_search"
+        android:title="@string/action_search"
+        android:icon="@mipmap/ic_search_round"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.widget.SearchView"/>
+    <item
+        android:id="@+id/action_shuffle"
+        android:title="@string/action_shuffle"
+        android:icon="@mipmap/ic_shuffle_round"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_random"
+        android:title="@string/action_random"
+        android:icon="@mipmap/ic_random_round"
+        app:showAsAction="ifRoom"/>
+</menu>
